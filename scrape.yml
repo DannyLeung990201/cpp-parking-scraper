@@ -1,0 +1,28 @@
+# .github/workflows/scrape.yml
+name: Scrape CPP Data
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # 每 10 分鐘
+  workflow_dispatch:        # optional: 手動啟動
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+      - name: Install dependencies
+        run: pip install pandas requests
+      - name: Run script
+        run: python scrape.py
+      - name: Commit updated CSV
+        run: |
+          git config --global user.email "dannyleung990201@gmail.com"
+          git config --global user.name "DannyLeung990201"
+          git add parking_data.csv
+          git commit -m "Update data"
+          git push

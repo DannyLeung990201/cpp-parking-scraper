@@ -2,6 +2,7 @@ import requests
 import csv
 from datetime import datetime
 import os
+from datetime import datetime, timezone, timedelta
 
 # JSON API endpoint
 url = "https://www.cityofperthparking.com.au/json/cpp/map/carpark/alt/0"
@@ -35,7 +36,9 @@ try:
             writer.writeheader()
 
         # 寫每一行
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # 西澳時間 = UTC+8
+        wa_time = datetime.now(timezone.utc) + timedelta(hours=8)
+        timestamp = wa_time.strftime('%Y-%m-%d %H:%M:%S')
         for item in data:
             row = {key: item.get(key, "") for key in fieldnames if key != "timestamp"}
             row["timestamp"] = timestamp
